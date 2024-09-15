@@ -7,7 +7,7 @@ Historical maps are invaluable for analyzing long-term changes in transportation
 ## Overview
 <p align="center">
     <figure>
-        <img src="Plots/Figures_Readme/Schema.png" alt="Method overview" height="300">
+        <img src="Figures/Schema.png" alt="Method overview" height="300">
         <figcaption>Geodata © Swisstopo (https://www.swisstopo.admin.ch/en)
   </figcaption>
     </figure>
