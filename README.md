@@ -30,7 +30,7 @@ If you find our work useful or interesting, or if you use our code, please cite 
 Step 1: Clone or download this repository and set it as the working directory, create a virtual environment and install the dependencies.
 
 ```bash
-cd road-seg-hist-maps/ 
+cd ProbRoadClass-DeepLearning/ 
 ```
 
 Step 2: Create a virtual environment and install the dependencies specified in the .yml files (can be found in the folder of each task).
