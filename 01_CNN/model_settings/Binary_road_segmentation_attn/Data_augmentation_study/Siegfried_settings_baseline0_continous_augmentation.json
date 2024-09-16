@@ -1,0 +1,50 @@
+{ 
+"model": 
+    {
+    "Name":  "U-Net-small",
+    "torch_autocast": true,
+    "pretrained": false,
+    "imagenet1k": false
+  },
+  "data": 
+    {
+    "data_set": "historic_maps_zurich",
+    "channel_mean": [0, 0, 0],
+    "channel_std": [255, 255, 255],
+    "input_size": [512,512],
+    "original_size": [500,500],
+    "training_files": ["train"],
+    "evaluation_files": ["test"],
+    "shuffle": true,
+    "tensorboard": true
+    },
+"training": 
+    {
+    "max_epochs": 50,
+    "training": true,
+    "steps_lr_warmup": 100,
+    "loss": "Dice",
+    "class_weights": [5.5],
+    "optimizer": "Adam",
+    "learning_rate": 0.1,
+    "Adam_betas": [0.9, 0.999],
+    "weight_decay": 0.0,
+    "lr_schedule": "cosine",
+    "gradient_clip": 1.0,
+    "batch_size": 32,
+    "training_augmentation": ["flip", "rotate_continous"],
+    "standardize": "studentization",
+    "early_stopping": true
+    },
+ "evaluation": 
+    {
+    "evaluation": true,
+    "use_test_set": false,
+    "batch_size": 32,
+    "standardize": "studentization",
+    "plots_samples_last_epoch": false,
+    "save_output": false,
+    "threshold": 0.5,
+    "crop": true
+    }
+}

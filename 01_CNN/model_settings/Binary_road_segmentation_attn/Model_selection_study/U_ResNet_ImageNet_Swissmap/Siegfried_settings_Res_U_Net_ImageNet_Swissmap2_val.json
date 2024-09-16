@@ -1,0 +1,50 @@
+{ 
+"model": 
+  { 
+  "Name":  "U-Net-Resnet18-Big-Attention",
+  "torch_autocast": true,
+  "pretrained": true,
+  "pretrained_model_name": "U_Net_Resnet18_Big_Attention_Siegfried_settings_Res_U_Net_ImageNet_Swissmap2"
+  },
+  "data": 
+    {
+    "data_set": "historic_maps_zurich",
+    "channel_mean": [0, 0, 0],
+    "channel_std": [255, 255, 255],
+    "input_size": [512,512],
+    "original_size": [500,500],
+    "training_files": ["train"],
+    "evaluation_files": ["test"],
+    "shuffle": true,
+    "tensorboard": false
+    },
+"training": 
+    {
+    "max_epochs": 50,
+    "training": false,
+    "steps_lr_warmup": 100,
+    "loss": "Dice",
+    "class_weights": [5.5],
+    "optimizer": "Adam",
+    "learning_rate": 0.01,
+    "Adam_betas": [0.9, 0.999],
+    "weight_decay": 0.0,
+    "lr_schedule": "cosine",
+    "gradient_clip": 1.0,
+    "batch_size": 32,
+    "training_augmentation": ["flip", "rotate"],
+    "standardize": "studentization",
+    "early_stopping": true
+    },
+ "evaluation": 
+    {
+    "evaluation": true,
+    "use_test_set": false,
+    "batch_size": 32,
+    "standardize": "studentization",
+    "plots_samples_last_epoch": false,
+    "save_output": true,
+    "threshold": 0.5,
+    "crop": true
+    }
+}
