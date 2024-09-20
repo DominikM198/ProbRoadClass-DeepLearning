@@ -26,7 +26,7 @@ If you find our work useful or interesting, or if you use our code, please cite 
 }  
 ```
 ## Model Weights
-The trained model weights for this research are available on [[HuggingFace]](https://huggingface.co/DominikM198/ProbRoadClass-DeepLearning).
+The trained model weights for this research are available on [HuggingFace](https://huggingface.co/DominikM198/ProbRoadClass-DeepLearning).
 
 ## Getting Started
 Step 1: Clone or download this repository and set it as the working directory, create a virtual environment and install the dependencies.
