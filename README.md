@@ -238,39 +238,28 @@ Run create_synthetic_data.py
 
 
 #### Train ensemble for road classification
-1. Modify the variable "BUFFERSIZE" in file 01_CNN/data/data_utils.py 
+1. Modify the path on line 26 in file 01_CNN/train_ensemble.py by assigning  the absolute path to the desired model settings (folder with "Siegfried_settings_classification" JSON's)
 ```python
-BUFFERSIZE = 13
+settings_path = const.SETTINGS_DIR.joinpath("c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification_final\\Siegfried_settings_classification_{}.json".format(i))
 ```
-2. Modify the path on line 26 in file 01_CNN/train_ensemble.py by assigning  the absolute path to the desired model settings (folder with "Siegfried_settings_labelsmoothing" JSON's)
-```python
-settings_path = const.SETTINGS_DIR.joinpath("c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification\\Final_ensemble_label_smoothing\\Siegfried_settings_labelsmoothing_{}.json".format(i))
-```
-3. Specify the number of ensemble members by modifying the variable "N_members" in file 01_CNN/train_ensemble.py
+2. Specify the number of ensemble members by modifying the variable "N_members" in file 01_CNN/train_ensemble.py
 ```python
 n_members = 30
 ```
-4. If a pre-trained model is fine-tuned, check if model weights are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. The trained models can be downloaded under the following link:
-TODO: add HF link to model weights
-5. Run train_ensemble.py file
+3. If a pre-trained model is fine-tuned, check if model weights are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. 
+4. Run train_ensemble.py file
 
 #### Evaluate a trained model on validation or test set
-1. Modify the variable "BUFFERSIZE" in file 01_CNN/data/data_utils.py 
+1. Modify constant variable "path" in file 01_CNN/main.py by assigning  path to the desired model settings (JSON's within model_settings subfolders)
 ```python
-BUFFERSIZE = 13
+path = c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification_final\\Siegfried_settings_classification_30_members_val.json"
 ```
-2. Modify constant variable "path" in file 01_CNN/main.py by assigning  path to the desired model settings (JSON's within model_settings subfolders)
-```python
-path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification\\Final_ensemble_label_smoothing\\Siegfried_settings_labelsmoothing_30_members_val.json"
-```
-3. Check if model weights for each ensemble member are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. 
-4. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results in the ensemble model settings (e.g., Siegfried_settings_labelsmoothing_30_members_val.json)
-5. Run main.py file
-
-TODO: run script_preprocess_classfication_data.py
+2. Check if model weights for each ensemble member are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. 
+3. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results in the ensemble model settings.
+4. Run main.py file
 
 #### Model settings
-The settings for training the ensemble members and evaluating the ensembles can be found in the folder 01_CNN//model_settings//Road_classification//Final_ensemble_label_smoothing. The final model used for the paper contained 30 members.
+The settings for training the ensemble members and evaluating the ensembles can be found in the folder 01_CNN//model_settings//Road_classification_final. The final model used for the paper contained 30 members.
 
 ## 4. 03_Postprocessing_Classification
 #### Data
@@ -319,12 +308,12 @@ BREAKPOINT_TRACING_PLOT_FLAG = False
 
 ## 5. 04_evaluation
 #### Data pre-processing
-1. Create a subfolder within the folder "06_evlaution" and add predicted line geometries as shapefiles.
-2. Modify variables within file 06_evaluation//preprocess_predictions.py:
+1. Create a subfolder within the folder "04_evlaution" and add predicted line geometries as shapefiles.
+2. Modify variables within file 04_evaluation//preprocess_predictions.py:
 ```python
 tiles = ["199_1941", "385_1941"] # tiles to evaluate
-name_predictions = "_road_geoms_predicted_dp1900mm_mannwhitneyu-0-01_6m.shp" # ending of name of shapefiles
-local_path_predictions = "50m_min_segment_distance\\mannwhitneyu-0-01_6m\\" # local path to location of the shapefiles
+name_predictions = "_road_geoms_analytical_breakpoints_minline_150m_seg_10m_6m.shp" # ending of name of shapefiles
+local_path_predictions = "analytical_breakpoints_minline_150m_seg_10m_6m\\" # local path to location of the shapefiles
 ```
 #### Evaluation
 1. Run file evaluation.py
