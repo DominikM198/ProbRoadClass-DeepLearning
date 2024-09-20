@@ -106,7 +106,7 @@ Additional experiment settings can be located in the respective subdirectories:
    - Settings for evaluating various data augmentation strategies with the Small-U-Net architecture.
 
 3. Pretraining:
-   - Settings for pretraining and evaluating the model on Swiss Map.
+   - Settings for pre-training and evaluating the model on Swiss Map.
 
    
 
