@@ -238,7 +238,7 @@ Run create_synthetic_data.py
 
 
 #### Train ensemble for road classification
-1. Modify the path on line 26 in file 01_CNN/train_ensemble.py by assigning  the absolute path to the desired model settings (folder with "Siegfried_settings_classification" JSON's)
+1. Modify the path on line 29 in file 01_CNN/train_ensemble.py by assigning  the absolute path to the desired model settings (folder with "Siegfried_settings_classification" JSON's)
 ```python
 settings_path = const.SETTINGS_DIR.joinpath("c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification_final\\Siegfried_settings_classification_{}.json".format(i))
 ```
