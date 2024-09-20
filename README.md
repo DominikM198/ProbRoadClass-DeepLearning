@@ -91,11 +91,11 @@ path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Binar
 
 | Model             | Train settings  | Val settings   | Test settings     |  Test accuracy | Test IoU |
 |----------------------|------------------------|-----------------------|-------------------|------------------------------------------|------------------------------|
-| <sup>Small U-Net<sup> | <sup>Siegfried_settings_baseline0_modelstudy.json<sup> | <sup>Siegfried_settings_baseline0_modelstudy_val.json<sup> | <sup>Siegfried_settings_baseline0_modelstudy_test.json<sup> | <sup>97.69% <sup> |<sup>76.31%<sup>|
-| <sup>Res-U-Net no pre-training<sup> | <sup>Siegfried_settings_full_training1_modelstudy.json<sup> | <sup>Siegfried_settings_full_training1_modelstudy_val.json<sup> | <sup>Siegfried_settings_full_training1_modelstudy_test.json<sup>| <sup>98.05%<sup> |<sup>79.30%<sup>|
-| <sup>Res-U-Net ImageNet<sup> | <sup>Siegfried_settings_not_pretrained_finetuning1_modelstudy.json<sup> | <sup>Siegfried_settings_not_pretrained_finetuning1_modelstudy_val.json<sup> | <sup>Siegfried_settings_not_pretrained_finetuning1_modelstudy_test.json<sup> |<sup>97.76% <sup> |<sup>77.06%<sup>|
-| <sup>Res-U-Net ImageNet + Swiss Map<sup> | <sup>Siegfried_settings_Final.json<sup> | <sup>Siegfried_settings_Final_val.json<sup> | <sup>Siegfried_settings_Final_test.json<sup> | <sup>98.25%<sup> |<sup>81.27%<sup>|
-| <sup>**MC Res-U-Net ImageNet + Swiss Map**<sup> | <sup>Siegfried_settings_Final.json<sup> | <sup>Siegfried_settings_Final_mc_val.json<sup> | <sup>Siegfried_settings_Final_mc_test.json<sup> | <sup>98.28%<sup> |<sup>81.43%<sup>|
+| <sup>Small U-Net<sup> | <sup>Siegfried_settings_baseline0.json<sup> | <sup>Siegfried_settings_baseline0_val.json<sup> | <sup>Siegfried_settings_baseline0_test.json<sup> | <sup>97.76% <sup> |<sup>76.86%<sup>|
+| <sup>Attention ResU-Net no pre-training<sup> | <sup>Siegfried_settings_full_training2.json<sup> | <sup>Siegfried_settings_full_training2_val.json<sup> | <sup>Siegfried_settings_full_training2_test.json<sup>| <sup>98.07%<sup> |<sup>79.30%<sup>|
+| <sup>Attention ResU-Net ImageNet<sup> | <sup>Siegfried_settings_not_pretrained_finetuning1.json<sup> | <sup>Siegfried_settings_not_pretrained_finetuning1_val.json<sup> | <sup>Siegfried_settings_not_pretrained_finetuning1_test.json<sup> |<sup>98.08% <sup> |<sup>78.55%<sup>|
+| <sup>Attention ResU-Net ImageNet + Swiss Map<sup> | <sup>Siegfried_settings_Res_U_Net_ImageNet_Swissmap2.json<sup> | <sup>Siegfried_settings_Res_U_Net_ImageNet_Swissmap2_val.json<sup> | <sup>Siegfried_settings_Res_U_Net_ImageNet_Swissmap2_test.json<sup> | <sup>98.37%<sup> |<sup>82.10%<sup>|
+
 
 Additional experiment settings can be located in the respective subdirectories:
 
