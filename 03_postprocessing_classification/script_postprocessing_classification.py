@@ -14,7 +14,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # Constants
 SHEET_NUMBERS = ['199', '385']
-SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
+SIGFRIED_FILENAME_PREFIX = ''
+SIGFRIED_FILENAME_SUFFIX = '_map'
 OUTPUT_FILENAME_PREFIX = 'minline_80m_seg_10m'
 W_SIZE = 500
 BUFFERSIZES_METER = [6]
@@ -30,7 +31,7 @@ ROAD_CAT_COLORS = {
 
 BREAKPOINT_TRACING_DISCRETIZATION = 10 # meters
 BREAKPOINT_TRACING_CROP_DISTANCE = 20 # meters
-BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH = 120 # meters
+BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH = 80 # meters
 BREAKPOINT_TRACING_PLOT_FLAG = False
 
 path_input_folder = './input'
@@ -142,9 +143,9 @@ for sheet_number in SHEET_NUMBERS:
     print(f'[{datetime.datetime.now()}] Processing {sheet_number}')
     print('----------------------------------------------------------------------------------------------------')
 
-    print(f'[{datetime.datetime.now()}] Map Stiching: Load the classification tiles')
+    print(f'[{datetime.datetime.now()}] Map Stitching: Load the classification tiles')
     # Open the Siegfried map
-    ds_siegfried = gdal.Open(f'{path_input_folder}/{SIGFRIED_FILENAME_PREFIX}{sheet_number}.tif')
+    ds_siegfried = gdal.Open(f'{path_input_folder}/{SIGFRIED_FILENAME_PREFIX}{sheet_number}{SIGFRIED_FILENAME_SUFFIX}.tif')
     array_siegfried_map = ds_siegfried.GetRasterBand(1).ReadAsArray()
 
     # Iterate over all road categories

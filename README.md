@@ -160,11 +160,12 @@ DOUGLAS_PEUCKER_THRESHOLD = 1.9
 ## 3. 01_CNN
 
 #### Data
-
+For the data there should be a folder with the name "datasets" having following structure:
 ```
 +---classification
     +---test
     |   +---road_geoms_ground_truth    -> [optional] ESRI Shapefiles containing the labeled linestring geometries of the road center lines (with road class labels)
+    |                                     This data can be used for the evaluation and/or to overpaint the map with the actual road classes for visual inspection.
     |   +---road_geoms_predicted       -> ESRI Shapefiles containing the predicted linestring geometries of the road center lines
     |   +---siegfried_sheets           -> GeoTIFF files of the scanned Siegfried Map sheets
     |   +---temp                       -> [empty]
