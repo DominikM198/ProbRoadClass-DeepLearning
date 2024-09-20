@@ -252,7 +252,7 @@ n_members = 30
 #### Evaluate a trained model on validation or test set
 1. Modify constant variable "path" in file 01_CNN/main.py by assigning  path to the desired model settings (JSON's within model_settings subfolders)
 ```python
-path = c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification_final\\Siegfried_settings_classification_30_members_val.json"
+path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Road_classification_final\\Siegfried_settings_classification_30_members_val.json"
 ```
 2. Check if model weights for each ensemble member are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. 
 3. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results in the ensemble model settings.
