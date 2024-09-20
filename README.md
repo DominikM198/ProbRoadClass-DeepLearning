@@ -160,16 +160,29 @@ DOUGLAS_PEUCKER_THRESHOLD = 1.9
 ## 3. 01_CNN
 
 #### Data
-1. Create a subfolder with the name "classification" in the folder "datasets.
-2. Create subfolders with the names "train", "validate", and "test" within "classification".
-3. Create subfolders within each of the subfolders in "classification" with the names  "road_geoms", "temp", and "siegfried_sheets".
-4. Create a subfolder within "train" and "validate" with the name "road_geoms_labled".
-5. Create a subfolder within "train" with the name "masks".
-6. Create a subfolder within "test" with the name "road_geoms_predicted".
-8. Copy the corresponding Siegfried Map sheets as GeoTiff-files into the folders "classification\train\siegfried_sheets", "classification\validate\siegfried_sheets" and "classification\test\siegfried_sheets". The naming should match the pattern '{sheet_number}_map.tif'.
-9. Copy the corresponding predicted road geometries as ESRI Shapefile from the folder "02_postprocessing_segmentation/output" into the folder folders "classification\validate\road_geoms_ground_truth" and "segmentation\test\road_geoms_predicted". The naming should match the pattern '{sheet_number}_road_geoms.shp'.
-10. Copy the true road geometries containing the true road class label as an attribute called `road_cat` of type integer into the folder "segmentation\test\road_geoms_ground_truth". The naming should match the pattern '{sheet_number}_road_geoms.shp'.
 
+```
++---classification
+    +---test
+    |   +---road_geoms_ground_truth    -> [optional] ESRI Shapefiles containing the labeled linestring geometries of the road center lines (with road class labels)
+    |   +---road_geoms_predicted       -> ESRI Shapefiles containing the predicted linestring geometries of the road center lines
+    |   +---siegfried_sheets           -> GeoTIFF files of the scanned Siegfried Map sheets
+    |   +---temp                       -> [empty]
+    |   \---tiles                      -> [empty]
+    +---train
+    |   +---masks                      -> GeoTIFF files with the mask if there is not full coverage of labeled road geometries for a full Siegfried Map sheet
+    |   +---road_geoms_ground_truth    -> ESRI Shapefiles containing the labeled linestring geometries of the road center lines (without road class labels)
+    |   +---road_geoms_syn_labeled     -> [empty]
+    |   +---siegfried_sheets           -> GeoTIFF files of the scanned Siegfried Map sheets
+    |   +---temp                       -> [empty]
+    |   \---tiles                      -> [empty]
+    \---validate
+        +---road_geoms_ground_truth    -> ESRI Shapefiles containing the labeled linestring geometries of the road center lines (without road class labels)
+        +---road_geoms_syn_labeled     -> [empty]
+        +---siegfried_sheets           -> GeoTIFF files of the scanned Siegfried Map sheets
+        +---temp                       -> [empty]
+        \---tiles                      -> [empty]
+```
 
 #### Data pre-processing for classification (create synthetic data)
 *Settings*
