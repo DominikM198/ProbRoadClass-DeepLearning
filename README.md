@@ -41,7 +41,7 @@ Step 2: Create a virtual environment and install the dependencies specified in t
 ## 1. 01_CNN
 This section of the code is intended to train a binary road segmentation model. Once the model is trained, it generates and saves predictions for the validation and test sets to the disk.
 #### Data pre-processing
-For the data there should be a folder with the name "datasets" having following structure:
+For the data there should be a folder with the name "datasets" having the following structure:
 ```
 +---segmentation
 |   +---test
@@ -132,7 +132,7 @@ SHEET_NUMBERS = ['017', '199', '385']
 SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
 SIGFRIED_FILENAME_SUFFIX = ''
 ```
-- Set the area thershold for the connected components filtering
+- Set the area threshold for the connected components filtering
 ```python
 CC_AREA_THRESHOLD = 100
 ```
@@ -148,7 +148,7 @@ DOUGLAS_PEUCKER_THRESHOLD = 1.9
 ## 3. 01_CNN
 
 #### Data
-For the data there should be a folder with the name "datasets" having following structure:
+For the data, there should be a folder with the name "datasets" having the following structure:
 ```
 +---classification
     +---test
@@ -181,7 +181,7 @@ Set the constants in the header of the file create_synthetic_data.py
 ```python
 BUFFERSIZE_LABELS = 10
 ```
-- Set the buffer size in pixels for overpainting the Siegfried map sheets with the predicted road geometries.
+- Set the buffer size in pixels to overpaint the Siegfried map sheets with the predicted road geometries.
 ```python
 BUFFERSIZE_BACKGROUND_OVERPAINTING = 17
 ```
@@ -263,7 +263,7 @@ The settings for training the ensemble members and evaluating the ensembles can 
 
 ## 4. 03_Postprocessing_Classification
 #### Data
-The script requires following folder structure:
+The script requires the following folder structure:
 ```
 +---02_postprocessing_classification
     +---input        -> GeoTIFF files of the scanned Siegfried Map sheets; predicted road geometries from the segmentation; predicted TIFF files from the classification
@@ -277,13 +277,13 @@ Set settings in the header of the file script_postprocessing_classification_brea
 ```python
 SHEET_NUMBERS = ['017', '199', '385']
 ```
-- Set the prefix of the Siegfried map sheet files e.g. 'rgb_TA_' if the file is named 'rgb_TA_017.tif'
+- Set the prefix of the Siegfried map sheet files, e.g. 'rgb_TA_' if the file is named 'rgb_TA_017.tif'
 ```python
 SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
 SIGFRIED_FILENAME_SUFFIX = ''
 ```
 
-- Set an prefix / identifier string with is used to store the result in an unique output folder and is contained by each output file e.g. if the string is 'minline_80m_seg_10m' then the file is named '{sheet_number}_road_geoms_minline_80m_seg_10m.shp'
+- Set an prefix/identifier string that is used to store the result in a unique output folder and is contained by each output file, e.g. if the string is 'minline_80m_seg_10m', then the file is named '{sheet_number}_road_geoms_minline_80m_seg_10m.shp'
 ```python
 OUTPUT_FILENAME_PREFIX = 'minline_80m_seg_10m'
 ```
