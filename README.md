@@ -25,6 +25,8 @@ If you find our work useful or interesting, or if you use our code, please cite 
   note    = {arXiv:xxxx.xxxxx}  
 }  
 ```
+## Model Weights
+The trained model weights for this research are available on [[HuggingFace]](https://huggingface.co/DominikM198/ProbRoadClass-DeepLearning).
 
 ## Getting Started
 Step 1: Clone or download this repository and set it as the working directory, create a virtual environment and install the dependencies.
@@ -68,30 +70,22 @@ For the data there should be a folder with the name "datasets" having following 
 ```
 
 #### Train a binary road segmentation model
-1. Modify the variable "BUFFERSIZE" in file 01_CNN/data/data_utils.py 
+1. Modify the constant variable "path" in file 01_CNN/main.py by assigning the path to the desired model settings (JSON's within model_settings subfolders)
 ```python
-BUFFERSIZE = 10
+path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Binary_road_segmentation\\SETTINGS_FOLDER\\SETTINGS.json"
 ```
-2. Modify the constant variable "path" in file 01_CNN/main.py by assigning the path to the desired model settings (JSON's within model_settings subfolders)
-```python
-path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Binary_road_segmentation\\Segmentation_Final\\Siegfried_settings_Final.josn"
-```
-3. If a pre-trained model is fine-tuned, check if model weights are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file.
-4. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results
-5. Run main.py file
+2. If a pre-trained model is fine-tuned, check if model weights are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file.
+3. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results
+4. Run main.py file
 
 #### Evaluate a trained model on validation or test set
-1. Modify the variable "BUFFERSIZE" in file 01_CNN/data/data_utils.py 
+1. Modify the constant variable "path" in file 01_CNN/main.py by assigning  the path to the desired model settings (JSONS's within model_settings subfolders)
 ```python
-BUFFERSIZE = 10
+path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Binary_road_segmentation\\SETTINGS_FOLDER\\SETTINGS.json"
 ```
-2. Modify the constant variable "path" in file 01_CNN/main.py by assigning  the path to the desired model settings (JSONS's within model_settings subfolders)
-```python
-path = "c:\\Road_segmentation\\road-seg-hist-maps\\01_CNN\\model_settings\\Binary_road_segmentation\\Segmentation_Final\\Siegfried_settings_Final_mc_val.json"
-```
-3. Check if model weights are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. 
-4. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results
-5. Run main.py file
+2. Check if model weights are available within the folder 01_CNN/storage/01_CNN/models with the same name as the field "pretrained_model_name" in the chosen settings JSON file. 
+3. Set field value of field "save_output" to true to save predictions within the folder 01_CNN/storage/01_CNN/results
+4. Run main.py file
 
 #### Model settings
 
@@ -111,14 +105,8 @@ Additional experiment settings can be located in the respective subdirectories:
 2. Data_augmentation_study:
    - Settings for evaluating various data augmentation strategies with the Small-U-Net architecture.
 
-3. Dropout_p_study:
-   - Settings for experiments to tune the dropout probability (p) during inference for the MC Res-U-Net Model.
-
-4. Ensemble_size_study:
-   - Experiments to assess the effect of different numbers of ensemble members on the MC Res-U-Net Model.
-
-5. Segmentation_Final:
-   - Settings for training the final Res-U-Net model, as well as settings for evaluating the MC Res-U-Net. Additionally, settings for pretraining and evaluating the model on Swiss Map.
+3. Pretraining:
+   - Settings for pretraining and evaluating the model on Swiss Map.
 
    
 
