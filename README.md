@@ -39,17 +39,33 @@ Step 2: Create a virtual environment and install the dependencies specified in t
 ## 1. 01_CNN
 This section of the code is intended to train a binary road segmentation model. Once the model is trained, it generates and saves predictions for the validation and test sets to the disk.
 #### Data pre-processing
-1. Create a folder with the name "dataset" in the repository.
-2. Create a subfolder with the names "segmentation" and "segmentation_pretraining".
-3. Create subfolders with the names "train", "validate", and "test" within "segmentation".
-4. Create subfolders with the names "train", "validate", and "data" within "segmentation_pretraining".
-5. Create subfolders within each of the subfolders in "segmenation" with the names "labels", "mask", "road_geoms", and "siegfried_sheets".
-6. Create subfolders within each of the subfolders in "segmentation_pretraining" with the names "labels", "road_geoms", and "swissmap_sheets".
-7. Copy the corresponding Swiss Map sheets as GeoTiff-files into the folders "segmentation_pretraining\train\swissmap_sheets" and "segmentation_pretraining\validate\swissmap_sheets". The naming should match the pattern '{sheet_number}_map.tif'.
-8. Copy the corresponding  Siegfried Map sheets as GeoTiff-files into the folders "segmentation\train\siegfried_sheets", "segmentation\validate\siegfried_sheets" and "segmentation\test\siegfried_sheets". The naming should match the pattern '{sheet_number}_map.tif'.
-9. Copy the corresponding road geometries as ESRI Shapefile into the folder folders "segmentation_pretraining\train\road_geoms" and "segmentation_pretraining\validate\road_geoms". The naming should match the pattern '{sheet_number}_road_geoms.shp'.
-10. Copy the corresponding road geometries as ESRI Shapefile into the folder folders "segmentation\train\road_geoms", "segmentation\validate\road_geoms", and "segmentation\test\road_geoms". The naming should match the pattern '{sheet_number}_road_geoms.shp'.
-11. In the case that there is not full coverage of labeled road geometries for a full Siegfried Map sheet, also copy for the corresponding Siegfried Map sheet a binary mask as GeoTiff-files into the folders "segmentation\train\masks", "segmentation\validate\masks" and "segmentation\test\masks". The naming should match the pattern '{sheet_number}_mask.tif'. Please be aware that the mask GeoTIff-file must have the same coordinate reference system, the same extent and the same pixel resolution as the Siegfried Map sheet does.
+For the data there should be a folder with the name "datasets" having following structure:
+```
++---segmentation
+|   +---test
+|   |   +---labels              -> [empty] the rasterized road geometries will be saved here automatically              
+|   |   +---road_geoms          -> ESRI Shapefiles containing the linestring geometries of the road center lines
+|   |   \---siegfried_sheets    -> GeoTIFF files of the scanned Siegfried Map sheets
+|   +---train
+|   |   +---labels              -> [empty] the rasterized road geometries will be saved here automatically
+|   |   +---masks               -> GeoTIFF files with the mask if there is not full coverage of labeled road geometries for a full Siegfried Map sheet
+|   |   +---road_geoms          -> ESRI Shapefiles containing the linestring geometries of the road center lines
+|   |   \---siegfried_sheets    -> GeoTIFF files of the scanned Siegfried Map sheets
+|   \---validate
+|       +---labels              -> [empty] the rasterized road geometries will be saved here automatically
+|       +---road_geoms          -> ESRI Shapefiles containing the linestring geometries of the road center lines
+|       \---siegfried_sheets    -> GeoTIFF files of the scanned Siegfried Map sheets
+|
+\---segmentation_pretraining
+    +---train
+    |   +---labels              -> [empty] the rasterized road geometries will be saved here automatically
+    |   +---road_geoms          -> ESRI Shapefiles containing the linestring geometries of the road center lines
+    |   \---swissmap_sheets     -> GeoTIFF files of the Swiss Map Raster 25 sheets
+    \---validate
+        +---labels              -> [empty] the rasterized road geometries will be saved here automatically
+        +---road_geoms          -> ESRI Shapefiles containing the linestring geometries of the road center lines
+        \---swissmap_sheets     -> GeoTIFF files of the Swiss Map Raster 25 sheets
+```
 
 #### Train a binary road segmentation model
 1. Modify the variable "BUFFERSIZE" in file 01_CNN/data/data_utils.py 
@@ -109,9 +125,13 @@ Additional experiment settings can be located in the respective subdirectories:
 ## 2. 02_Postprocessing_Segmentation
 
 #### Data
-- Create a subfolder "input" in the folder "02_postprocessing_segmentation"
-- Insert the Siegfired map sheets in the input folder with the naming like {SIGFRIED_FILENAME_PREFIX}_{sheet_number}.tif
-- Insert the tiles with the prediction of the Segmentation model in the input folder with the naming like {sheet_number}_{index}.tif
+The script requires following folder structure:
+```
++---02_postprocessing_segmentation
+    +---input        -> GeoTIFF files of the scanned Siegfried Map sheets; predicted TIFF files from the segmentation
+    +---output       -> [empty]
+    \---temp         -> [empty]
+```
 
 #### Setting
 Set settings in the header of the file script_postprocessing_segmentation.py
@@ -122,6 +142,7 @@ SHEET_NUMBERS = ['017', '199', '385']
 - Set the prefix of the Siegfried map sheet files e.g. 'rgb_TA_' if the file is named 'rgb_TA_017.tif'
 ```python
 SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
+SIGFRIED_FILENAME_SUFFIX = ''
 ```
 - Set the area thershold for the connected components filtering
 ```python
@@ -134,12 +155,7 @@ DOUGLAS_PEUCKER_THRESHOLD = 1.9
 
 #### Run script
 - Run file script_postprocessing_segmentation.py
-- The output will be saved in the folder "02_postprocessing_segmentation/output" and will have an ESRI Shapefile per processed Siegfried sheet containing the road geometries. These files will be named like {sheet_number}_roads.shp.
-- The intermediate results will be saved in the folder "02_postprocessing_segmentation/temp". For each Siegfried sheet there will be a GeoTiff with contains:
-  - The used mask which is default everywhere true (name: {sheet_number}_mask.tif)
-  - The stiched map from the segmentation predition tiles (name: {sheet_number}_segmentation.tif)
-  - The output of the morphological operations (name: {sheet_number}_morphological_operations.tif)
-  - The output of the skeletonization (name: {sheet_number}_skeleton.tif)
+- The output will be saved in the folder "02_postprocessing_segmentation/output" and will have an ESRI Shapefile per processed Siegfried sheet containing the road geometries. These files will be named like {sheet_number}_road_geoms.shp.
 
 ## 3. 01_CNN
 
@@ -158,7 +174,7 @@ DOUGLAS_PEUCKER_THRESHOLD = 1.9
 #### Data pre-processing for classification (create synthetic data)
 *Settings*
 
-Set the constants in the header of the file script_preprocess_classfication_data.py
+Set the constants in the header of the file create_synthetic_data.py
 - Set the buffer size in pixels to draw the labels of the road classes
 ```python
 BUFFERSIZE_LABELS = 10
@@ -194,18 +210,18 @@ SYMBOLIZATION = {
     },
     3: {
         'offset': 4.7,  # meter
-        'gap_length': 7.5, #10,  # meter
-        'dash_length': 11, #14,  # meter
+        'gap_length': 7.5,  # meter
+        'dash_length': 11,  # meter
         'thickness_line_dashed': 1.75,  # pixel
         'thickness_line_solid': 1.75  # pixel
     },
     2: {
-        'thickness': 2, #1.75  # pixel
+        'thickness': 2,  # pixel
     },
     1: {
         'gap_length': 12.5,  # meter
-        'dash_length': 17.5, #17,  # meter
-        'thickness': 2, #1.75  # pixel
+        'dash_length': 17.5,  # meter
+        'thickness': 2,  # pixel
     }
 }
 ```
@@ -215,7 +231,7 @@ SYMBOLIZATION = {
 
 This will create the synthetic data for the road classification task and save all relevant tiles in the dataset folder.
 
-Run script_preprocess_classfication_data.py
+Run create_synthetic_data.py
 
 
 
@@ -254,14 +270,15 @@ TODO: run script_preprocess_classfication_data.py
 #### Model settings
 The settings for training the ensemble members and evaluating the ensembles can be found in the folder 01_CNN//model_settings//Road_classification//Final_ensemble_label_smoothing. The final model used for the paper contained 30 members.
 
-## 4. Option A: 03_Postprocessing_Classification_Breakpoint_Approach
+## 4. 03_Postprocessing_Classification
 #### Data
-- Create a subfolder "input" in the "03_postprocess_classification_breakpoint_approach" folder.
-- Insert the Siegfried map sheets in the input folder with the naming like {SIGFRIED_FILENAME_PREFIX}_{sheet_number}.tif
-- Insert the GeoTiff with the hard mask in the input folder with the naming like {sheet_number}_hard_mask.tif
-- Insert the predicted road geometries in the input folder with the naming like {sheet_number}_road_geoms.shp
-- Insert the tiles with the predictions of the classification model in the input folder with the naming like {sheet_number}_{index}_class{road_cat}.tif
-- Insert the tiles with the predictions of the breakpoint model in the input folder with the naming like {sheet_number}_{index}{BREAKPOINT_FILENAME_SUFFIX}.tif
+The script requires following folder structure:
+```
++---02_postprocessing_classification
+    +---input        -> GeoTIFF files of the scanned Siegfried Map sheets; predicted road geometries from the segmentation; predicted TIFF files from the classification
+    +---output       -> [empty]
+    \---temp         -> [empty]
+```
 
 #### Setting
 Set settings in the header of the file script_postprocessing_classification_breakpoint_approach.py
@@ -272,67 +289,30 @@ SHEET_NUMBERS = ['017', '199', '385']
 - Set the prefix of the Siegfried map sheet files e.g. 'rgb_TA_' if the file is named 'rgb_TA_017.tif'
 ```python
 SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
+SIGFRIED_FILENAME_SUFFIX = ''
 ```
-- Set the suffix of the breakpoint files e.g. '_breakpoint' if the file is named '017_0_breakpoint.tif'
+
+- Set an prefix / identifier string with is used to store the result in an unique output folder and is contained by each output file e.g. if the string is 'minline_80m_seg_10m' then the file is named '{sheet_number}_road_geoms_minline_80m_seg_10m.shp'
 ```python
-BREAKPOINT_FILENAME_SUFFIX = '_breakpoint'
+OUTPUT_FILENAME_PREFIX = 'minline_80m_seg_10m'
 ```
-- Set the buffer radius in pixels to filter out predictions at known intersections
-```python
-INTERSECTION_POINT_BUFFER_RADIUS = 20 # pixels
-```
-- Set the buffer radius in meters to define the area of a breakpoint that must overlap with a road geometry to be considered
-```python
-BREAKPOINT_BUFFER_RADIUS = 4 # meters
-```
+
 - Set one or more buffer sizes in meters to calculate the zonal statistics
 ```python
 BUFFERSIZES_METER = [6] # meters
 ```
 
-#### Run script
-- Run file script_postprocessing_classification_breakpoint_approach.py
-- The output will be saved in the folder "03_postprocess_classification_breakpoint_approach/output" and will have an ESRI Shapefile per processed Siegfried sheet containing the road geometries. These files will be named like {sheet_number}_roads.shp.
-- The intermediate results will be saved in the folder "03_postprocess_classification_breakpoint_approach/temp". For each Siegfried sheet there will be a GeoTiff or ESRI Shapefile which contains:
-  - The vectorized breakpoint geometries (name: {sheet_number}_breakpoints.shp)
-  - The road geometries with the inserted breakpoints (name: {sheet_number}_roads_with_breakpoints.shp)
-  - The stiched maps for containing the predicted probavilities from the classification model (name: {sheet_number}_classification_class_{road_cat}.tif)
-
-## 4. Option B: 03_Postprocessing_Classification_Testing_Approach
-#### Data
-- Create a subfolder "input" in the folder "04_postprocessing_classification_testing_approach".
-- Insert the Siegfried map sheets in the input folder with the naming like {SIGFRIED_FILENAME_PREFIX}_{sheet_number}.tif
-- Insert the predicted road geometries in the input folder with the naming like {sheet_number}_road_geoms.shp
-- Insert the tiles with the predictions of the classification model in the input folder with the naming like {sheet_number}_{index}_class{road_cat}.tif
-
-#### Setting
-Set settings in the header of the file script_postprocessing_classification_testing_approach.py
-- Set the sheet numbers of the Siegfried map sheets which should be processed
+- The hyperparameter for the split point (breakpoint) detection are defined by:
 ```python
-SHEET_NUMBERS = ['017', '199', '385']
-```
-- Set the prefix of the Siegfried map sheet files e.g. 'rgb_TA_' if the file is named 'rgb_TA_017.tif'
-```python
-SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
-```
-- Set one or more buffer sizes in meters to calculate the zonal statistics
-```python
-BUFFERSIZES_METER = [6] # meters
-```
-- Set the significance levels for the Mann-Whitney U test
-```python
-SIGNIFICANCE_LEVELS = [0.01]
-```
-- Set the minimal segment length a segment has to be to be evaluated alone
-```python
-MINIMAL_SEGMENT_LENGTH = 50 # meters
+BREAKPOINT_TRACING_DISCRETIZATION = 10 # meters
+BREAKPOINT_TRACING_CROP_DISTANCE = 20 # meters
+BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH = 80 # meters
+BREAKPOINT_TRACING_PLOT_FLAG = False
 ```
 
 #### Run script
-Run file script_processing_classification_testing_approach.py
-- The output will be saved in the folder "03_postprocess_classification_testing_approach/output" and will have an ESRI Shapefile per processed Siegfried sheet containing the road geometries. These files will be named like {sheet_number}_roads.shp.
-- The intermediate results will be saved in the folder "03_postprocess_classification_testing_approach/temp". For each Siegfried sheet there will be a GeoTiff or ESRI Shapefile which contains:
-  - The stiched maps for containing the predicted probabilities from the classification model (name: {sheet_number}_classification_class_{road_cat}.tif)
+- Run file script_postprocessing_classification.py
+- The output will be saved in the folder "03_postprocess_classification/output" and will have an ESRI Shapefile per processed Siegfried sheet containing the road geometries. These files will be named like {sheet_number}_roads.shp.
 
 
 ## 5. 04_evaluation
