@@ -14,8 +14,9 @@ gdal.DontUseExceptions()
 
 
 # Constants
-SHEET_NUMBERS = ['017', '199', '385']
-SIGFRIED_FILENAME_PREFIX = 'rgb_TA_'
+SHEET_NUMBERS = ['199', '385']
+SIGFRIED_FILENAME_PREFIX = ''
+SIGFRIED_FILENAME_SUFFIX = '_map'
 W_SIZE = 500
 CC_AREA_THRESHOLD = 100
 DOUGLAS_PEUCKER_THRESHOLD = 1.9
@@ -97,7 +98,7 @@ for sheet_number in SHEET_NUMBERS:
 
     print(f'[{datetime.datetime.now()}] Map Stiching: Load the segmentation and mask tiles')
     # Open the Siegfried map
-    ds_siegfried = gdal.Open(f'{path_input_folder}/{SIGFRIED_FILENAME_PREFIX}{sheet_number}.tif')
+    ds_siegfried = gdal.Open(f'{path_input_folder}/{SIGFRIED_FILENAME_PREFIX}{sheet_number}{SIGFRIED_FILENAME_SUFFIX}.tif')
     array_siegfried_map = ds_siegfried.GetRasterBand(1).ReadAsArray()
 
     # Load the segmentation and mask tiles

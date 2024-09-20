@@ -17,8 +17,12 @@ __pycache__/
 *.pt
 
 datasets/
-05_zonal_stats/input_vis_30/
-05_zonal_stats/output_20240603/
+02_postprocessing_segmentation/input
+02_postprocessing_segmentation/output
+02_postprocessing_segmentation/temp
+03_postprocessing_classification/input
+03_postprocessing_classification/output
+03_postprocessing_classification/temp
 
 # C extensions
 *.so
