@@ -7,8 +7,8 @@ Preprocess the predictions for the road classification for evaluation.
 import geopandas as gpd
 
 tiles = ["199_1941", "385_1941"]
-name_predictions = "_road_geoms_analytical_breakpoints_minline_150m_seg_10m_6m.shp"
-local_path_predictions = "analytical_breakpoints_minline_150m_seg_10m_6m\\"
+name_predictions = "_road_geoms_minline_80m_seg_10m_6m.shp"
+local_path_predictions = "minline_80m_seg_10m_6m\\"
 local_path_processed = "road_classification\\"
 subfolder = "\\Predictions\\"
 road_classes = [1, 2, 3, 4, 5]
