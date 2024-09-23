@@ -34,9 +34,9 @@ BREAKPOINT_TRACING_CROP_DISTANCE = 20 # meters
 BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH = 80 # meters
 BREAKPOINT_TRACING_PLOT_FLAG = False
 
-path_input_folder = './input'
-path_temp_folder = './temp'
-path_output_folder = './output'
+path_input_folder = os.path.join(os.path.dirname(__file__), 'input')
+path_temp_folder = os.path.join(os.path.dirname(__file__), 'temp')
+path_output_folder = os.path.join(os.path.dirname(__file__), 'output')
 
 if not os.path.exists(path_temp_folder):
     os.mkdir(path_temp_folder)

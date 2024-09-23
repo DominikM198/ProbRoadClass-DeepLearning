@@ -21,9 +21,9 @@ W_SIZE = 500
 CC_AREA_THRESHOLD = 100
 DOUGLAS_PEUCKER_THRESHOLD = 1.9
 
-path_input_folder = './input'
-path_temp_folder = './temp'
-path_output_folder = './output'
+path_input_folder = os.path.join(os.path.dirname(__file__), 'input')
+path_temp_folder = os.path.join(os.path.dirname(__file__), 'temp')
+path_output_folder = os.path.join(os.path.dirname(__file__), 'output')
 
 if not os.path.exists(path_temp_folder):
     os.mkdir(path_temp_folder)
@@ -96,7 +96,7 @@ for sheet_number in SHEET_NUMBERS:
     print(f'[{datetime.datetime.now()}] Processing {sheet_number}')
     print('----------------------------------------------------------------------------------------------------')
 
-    print(f'[{datetime.datetime.now()}] Map Stiching: Load the segmentation and mask tiles')
+    print(f'[{datetime.datetime.now()}] Map Stitching: Load the segmentation and mask tiles')
     # Open the Siegfried map
     ds_siegfried = gdal.Open(f'{path_input_folder}/{SIGFRIED_FILENAME_PREFIX}{sheet_number}{SIGFRIED_FILENAME_SUFFIX}.tif')
     array_siegfried_map = ds_siegfried.GetRasterBand(1).ReadAsArray()
