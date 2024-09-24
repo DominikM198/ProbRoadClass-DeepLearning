@@ -293,12 +293,12 @@ OUTPUT_FILENAME_PREFIX = 'minline_80m_seg_10m'
 BUFFERSIZES_METER = [6] # meters
 ```
 
-- The hyperparameter for the split point (breakpoint) detection are defined by:
+- The hyperparameter for the split point detection are defined by:
 ```python
-BREAKPOINT_TRACING_DISCRETIZATION = 10 # meters
-BREAKPOINT_TRACING_CROP_DISTANCE = 20 # meters
-BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH = 80 # meters
-BREAKPOINT_TRACING_PLOT_FLAG = False
+SPLIT_POINT_DETECTION_DISCRETIZATION = 10  # meters
+SPLIT_POINT_DETECTION_CROP_DISTANCE = 20  # meters
+SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH = 80  # meters
+SPLIT_POINT_DETECTION_PLOT_FLAG = False
 ```
 
 #### Run script
