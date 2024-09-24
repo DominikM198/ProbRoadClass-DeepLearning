@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 SHEET_NUMBERS = ['199', '385']
 SIGFRIED_FILENAME_PREFIX = ''
 SIGFRIED_FILENAME_SUFFIX = '_map'
-OUTPUT_FILENAME_PREFIX = 'minline_80m_seg_10m'
+OUTPUT_FILENAME_PREFIX = 'minline_80m_seg_10m_2'
 W_SIZE = 500
 BUFFERSIZES_METER = [6]
 EPSILON = 0.000001
@@ -29,10 +29,10 @@ ROAD_CAT_COLORS = {
     5: '#cc0003'
 }
 
-BREAKPOINT_TRACING_DISCRETIZATION = 10 # meters
-BREAKPOINT_TRACING_CROP_DISTANCE = 20 # meters
-BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH = 80 # meters
-BREAKPOINT_TRACING_PLOT_FLAG = False
+SPLIT_POINT_DETECTION_DISCRETIZATION = 10  # meters
+SPLIT_POINT_DETECTION_CROP_DISTANCE = 20  # meters
+SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH = 80  # meters
+SPLIT_POINT_DETECTION_PLOT_FLAG = False
 
 path_input_folder = os.path.join(os.path.dirname(__file__), 'input')
 path_temp_folder = os.path.join(os.path.dirname(__file__), 'temp')
@@ -205,7 +205,7 @@ for sheet_number in SHEET_NUMBERS:
                     properties = dict(linestring['properties'])
                     properties['parentId'] = str(linestring.id)
                     geom = shape(linestring['geometry'])
-                    segmented_geom = geom.segmentize(max_segment_length=BREAKPOINT_TRACING_DISCRETIZATION)
+                    segmented_geom = geom.segmentize(max_segment_length=SPLIT_POINT_DETECTION_DISCRETIZATION)
                     cur_distances = []
                     cur_means = {1: [], 2: [], 3: [], 4: [], 5: []}
                     cur_stds = {1: [], 2: [], 3: [], 4: [], 5: []}
@@ -234,7 +234,7 @@ for sheet_number in SHEET_NUMBERS:
                                 print(f'[{datetime.datetime.now()}] Breakpoint Tracing: ERROR')
 
                     # Crop the data at the beginning and the end
-                    crop_ids = int(BREAKPOINT_TRACING_CROP_DISTANCE // BREAKPOINT_TRACING_DISCRETIZATION)
+                    crop_ids = int(SPLIT_POINT_DETECTION_CROP_DISTANCE // SPLIT_POINT_DETECTION_DISCRETIZATION)
                     if 2 * crop_ids + 1 < len(cur_distances):
                         cur_distances = cur_distances[crop_ids:-crop_ids]
                         for road_cat in range(1, 6):
@@ -273,7 +273,7 @@ for sheet_number in SHEET_NUMBERS:
                             'dist_from': 0.0,
                             'dist_to': breakpoint_candidates[0]['dist'],
                             'length_segment': breakpoint_candidates[0]['dist'],
-                            'length_segment_below_threshold': breakpoint_candidates[0]['dist'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH,
+                            'length_segment_below_threshold': breakpoint_candidates[0]['dist'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH,
                             'road_cat': breakpoint_candidates[0]['road_cat_before']
                         }]
                         # Add the middle segments
@@ -282,7 +282,7 @@ for sheet_number in SHEET_NUMBERS:
                                 'dist_from': breakpoint_candidates[i]['dist'],
                                 'dist_to': breakpoint_candidates[i + 1]['dist'],
                                 'length_segment': breakpoint_candidates[i + 1]['dist'] - breakpoint_candidates[i]['dist'],
-                                'length_segment_below_threshold': breakpoint_candidates[i + 1]['dist'] - breakpoint_candidates[i]['dist'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH,
+                                'length_segment_below_threshold': breakpoint_candidates[i + 1]['dist'] - breakpoint_candidates[i]['dist'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH,
                                 'road_cat': breakpoint_candidates[i]['road_cat_after']
                             })
                         # Add last segment
@@ -290,7 +290,7 @@ for sheet_number in SHEET_NUMBERS:
                             'dist_from': breakpoint_candidates[-1]['dist'],
                             'dist_to': geom.length,
                             'length_segment': geom.length - breakpoint_candidates[-1]['dist'],
-                            'length_segment_below_threshold': geom.length - breakpoint_candidates[-1]['dist'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH,
+                            'length_segment_below_threshold': geom.length - breakpoint_candidates[-1]['dist'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH,
                             'road_cat': breakpoint_candidates[-1]['road_cat_after']
                         })
 
@@ -298,12 +298,12 @@ for sheet_number in SHEET_NUMBERS:
                         while any([segment['length_segment_below_threshold'] for segment in segments]):
 
                             # Check if the line is too short
-                            if geom.length < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH:
+                            if geom.length < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH:
                                 segments = [{
                                     'dist_from': 0,
                                     'dist_to': geom.length,
                                     'length_segment': geom.length,
-                                    'length_segment_below_threshold': geom.length < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH,
+                                    'length_segment_below_threshold': geom.length < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH,
                                     'road_cat': segments[0]['road_cat']
                                 }]
                                 break
@@ -313,13 +313,13 @@ for sheet_number in SHEET_NUMBERS:
                                 if segments[0]['length_segment_below_threshold']:
                                     segments[1]['dist_from'] = segments[0]['dist_from']
                                     segments[1]['length_segment'] = segments[1]['dist_to'] - segments[1]['dist_from']
-                                    segments[1]['length_segment_below_threshold'] = segments[1]['length_segment'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH
+                                    segments[1]['length_segment_below_threshold'] = segments[1]['length_segment'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH
                                     segments = segments[1:]
 
                                 if segments[-1]['length_segment_below_threshold']:
                                     segments[-2]['dist_to'] = segments[-1]['dist_to']
                                     segments[-2]['length_segment'] = segments[-2]['dist_to'] - segments[-2]['dist_from']
-                                    segments[-2]['length_segment_below_threshold'] = segments[-2]['length_segment'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH
+                                    segments[-2]['length_segment_below_threshold'] = segments[-2]['length_segment'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH
                                     segments = segments[:-1]
 
                                 # Break the algorithm if there are only two segments left (second part of the algorithm
@@ -337,17 +337,17 @@ for sheet_number in SHEET_NUMBERS:
                                                 'dist_from': segments[i - 1]['dist_from'],
                                                 'dist_to': segments[i + 1]['dist_to'],
                                                 'length_segment': segments[i + 1]['dist_to'] - segments[i - 1]['dist_from'],
-                                                'length_segment_below_threshold': segments[i + 1]['dist_to'] - segments[i - 1]['dist_from'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH,
+                                                'length_segment_below_threshold': segments[i + 1]['dist_to'] - segments[i - 1]['dist_from'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH,
                                                 'road_cat': segments[i - 1]['road_cat']
                                             }
                                             segments = segments[:i - 1] + [merged_segment] + segments[i + 2:]
                                         else:
                                             segments[i - 1]['dist_to'] += 0.5 * segments[i]['length_segment']
                                             segments[i - 1]['length_segment'] = segments[i - 1]['dist_to'] - segments[i - 1]['dist_from']
-                                            segments[i - 1]['length_segment_below_threshold'] = segments[i - 1]['length_segment'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH
+                                            segments[i - 1]['length_segment_below_threshold'] = segments[i - 1]['length_segment'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH
                                             segments[i + 1]['dist_from'] -= 0.5 * segments[i]['length_segment']
                                             segments[i + 1]['length_segment'] = segments[i + 1]['dist_to'] - segments[i + 1]['dist_from']
-                                            segments[i + 1]['length_segment_below_threshold'] = segments[i + 1]['length_segment'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH
+                                            segments[i + 1]['length_segment_below_threshold'] = segments[i + 1]['length_segment'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH
                                             segments = segments[:i] + segments[i + 1:]
 
                             # Handle the case when there are only two segments left
@@ -355,13 +355,13 @@ for sheet_number in SHEET_NUMBERS:
                                 if segments[0]['length_segment_below_threshold']:
                                     segments[1]['dist_from'] = segments[0]['dist_from']
                                     segments[1]['length_segment'] = segments[1]['dist_to'] - segments[1]['dist_from']
-                                    segments[1]['length_segment_below_threshold'] = segments[1]['length_segment'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH
+                                    segments[1]['length_segment_below_threshold'] = segments[1]['length_segment'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH
                                     segments = segments[1:]
 
                                 elif segments[1]['length_segment_below_threshold']:
                                     segments[0]['dist_to'] = segments[1]['dist_to']
                                     segments[0]['length_segment'] = segments[0]['dist_to'] - segments[0]['dist_from']
-                                    segments[0]['length_segment_below_threshold'] = segments[0]['length_segment'] < BREAKPOINT_TRACING_MINIMUM_LINE_LENGTH
+                                    segments[0]['length_segment_below_threshold'] = segments[0]['length_segment'] < SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH
                                     segments = segments[:-1]
 
                             # Break the loop if there is only one segment / the whole line left
@@ -407,7 +407,7 @@ for sheet_number in SHEET_NUMBERS:
                             'id': linestring.id
                         })
 
-                    if BREAKPOINT_TRACING_PLOT_FLAG:
+                    if SPLIT_POINT_DETECTION_PLOT_FLAG:
                         import matplotlib.pyplot as plt
                         if not os.path.exists('{path_temp_folder}/plots'.format(path_temp_folder=path_temp_folder)):
                             os.mkdir('{path_temp_folder}/plots'.format(path_temp_folder=path_temp_folder))

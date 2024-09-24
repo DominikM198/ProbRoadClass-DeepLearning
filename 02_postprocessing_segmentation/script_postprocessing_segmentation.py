@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 from osgeo import gdal
 from skimage.morphology import skeletonize
-from shapely.geometry import LineString, MultiLineString, mapping
+from shapely.geometry import LineString, MultiLineString, mapping, shape
 from shapely.ops import linemerge
 from shapely import unary_union
 import fiona
@@ -244,7 +244,6 @@ for sheet_number in SHEET_NUMBERS:
     if isinstance(multilinestring, LineString):
         multilinestring = MultiLineString([multilinestring])
 
-    print(f'[{datetime.datetime.now()}] Vectorization: Merge lines to get disjoint features')
     linemerge_multilinestring = linemerge(multilinestring)
     if isinstance(linemerge_multilinestring, LineString):
         linemerge_multilinestring = MultiLineString([linemerge_multilinestring])
@@ -255,8 +254,8 @@ for sheet_number in SHEET_NUMBERS:
         'crs': 'EPSG:21781'
     }
 
-    print(f'[{datetime.datetime.now()}] Filtering and Generalization: Filter coordinate grid, simplify and export as ESRI Shapefiles')
-    with fiona.open(f'{path_output_folder}/{sheet_number}_road_geoms.shp', 'w', 'ESRI Shapefile', schema) as dst:
+    print(f'[{datetime.datetime.now()}] Filtering and Generalization: Filter coordinate grid and simplify geometries')
+    with fiona.open(f'{path_temp_folder}/{sheet_number}_road_geoms_filtered.shp', 'w', 'ESRI Shapefile', schema) as dst:
         for idx, geom in enumerate(linemerge_multilinestring.geoms):
             properties = {'id': idx}
 
@@ -291,13 +290,24 @@ for sheet_number in SHEET_NUMBERS:
                     'properties': properties
                 })
 
-    with fiona.open(f'{path_output_folder}/{sheet_number}_road_geoms.shp', 'r') as src:
+    with fiona.open(f'{path_temp_folder}/{sheet_number}_road_geoms_filtered.shp', 'r') as src:
         print(f'[{datetime.datetime.now()}] Filtering and Generalization: Dissolve and merge lines to get disjoint features')
-        multilinestring = unary_union(lines)
+        schema = src.schema
+        multilinestring = unary_union([shape(feature['geometry']) for feature in src])
         if isinstance(multilinestring, LineString):
             multilinestring = MultiLineString([multilinestring])
-
+        elif isinstance(multilinestring, MultiLineString):
+            pass
+        else:
+            raise ValueError('Expected a MultiLineString')
         linemerge_multilinestring = linemerge(multilinestring)
         if isinstance(linemerge_multilinestring, LineString):
             linemerge_multilinestring = MultiLineString([linemerge_multilinestring])
-
+        print(f'[{datetime.datetime.now()}] Filtering and Generalization: Export data as ESRI Shapefile')
+        with fiona.open(f'{path_output_folder}/{sheet_number}_road_geoms.shp', 'w', 'ESRI Shapefile', schema) as dst:
+            for idx, geom in enumerate(linemerge_multilinestring.geoms):
+                properties = {'id': idx}
+                dst.write({
+                    'geometry': mapping(geom),
+                    'properties': properties
+                })
