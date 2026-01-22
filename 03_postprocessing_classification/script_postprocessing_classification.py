@@ -29,6 +29,7 @@ ROAD_CAT_COLORS = {
     5: '#cc0003'
 }
 
+SPLIT_POINT_DETECTION_ENABLED = True
 SPLIT_POINT_DETECTION_DISCRETIZATION = 10  # meters
 SPLIT_POINT_DETECTION_CROP_DISTANCE = 20  # meters
 SPLIT_POINT_DETECTION_MINIMUM_LINE_LENGTH = 80  # meters
@@ -201,6 +202,22 @@ for sheet_number in SHEET_NUMBERS:
                     buffer=str(BUFFERSIZE_METER).replace('.', '-')
             ), 'w', 'ESRI Shapefile', schema) as dst:
                 
+                # --> Breakpoint detection disabled (only for an ablation study)
+                # Copy the input shapefile to the output shapefile with an additional property 'parentId'
+                # such that the rest of the pipeline can continue working without the breakpoint detection.
+                if not SPLIT_POINT_DETECTION_ENABLED:
+                    for linestring in tqdm(src, desc='Copying Lines without Breakpoint Detection'):
+                        properties = dict(linestring['properties'])
+                        properties['parentId'] = str(linestring.id)
+                        geom = shape(linestring['geometry'])
+                        dst.write({
+                            'geometry': mapping(geom),
+                            'properties': properties,
+                            'id': linestring.id
+                        })
+                    continue
+                
+                # --> Breakpoint detection enabled
                 for linestring in tqdm(src, desc='Breakpoint Tracing'):
                     properties = dict(linestring['properties'])
                     properties['parentId'] = str(linestring.id)
